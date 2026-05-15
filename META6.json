@@ -1,0 +1,30 @@
+{
+    "name": "MCP::Client",
+    "description": "Thin Model Context Protocol (MCP) client.",
+    "version": "0.0.1",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "depends": [
+        "JSON::Fast:ver<0.19+>",
+        "LLM::Functions:ver<0.5.7+>",
+        "Text::SubParsers:ver<0.1.2+>",
+        "Hash::Merge:ver<2.0.0>:api<2>"
+    ],
+    "build-depends": [],
+    "provides": {
+        "MCP::Client": "lib/MCP/Client.rakumod"
+    },
+    "license": "Artistic-2.0",
+    "tags": [
+        "ai",
+        "agentic",
+        "agentic-ai",
+        "api",
+        "mcp",
+        "model context protocol"
+    ],
+    "api": "0",
+    "source-url": "https://github.com/antononcube/Raku-MCP-Client"
+}
