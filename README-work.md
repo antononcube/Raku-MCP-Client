@@ -82,7 +82,7 @@ $client.initialize;
 
 ### Tools discovery and creation
 
-Get the MCP server tools list and print it:
+Get the MCP server tools list (and tabulate parts of it):
 
 ```raku, results=asis
 my @mcp-tools = |$client.list-tools();
@@ -99,7 +99,7 @@ my @tools = @mcp-tools.map({ $client.to-llm-tool($_) });
 
 ### LLM invocations
 
-Generate are list of random words (MCP server provided) using an LLM request:
+Using an LLM request generate a list of random words (via a MCP server provided tool):
 
 ```raku
 my $conf = llm-configuration('ChatGPT', model => 'gpt-4.1-mini', :@tools);
@@ -107,7 +107,7 @@ say llm-synthesize('Generate a list of 12 random cat pet names.', e => $conf);
 ```
 
 
-Generate a JSON array of random pretentious jobs (in English) and print it:
+Generate a JSON object of random pretentious jobs, and deserialize and print it:
 
 ```raku, results=asis
 my $res = llm-synthesize([
