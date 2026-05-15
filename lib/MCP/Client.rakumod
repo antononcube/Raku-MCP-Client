@@ -42,13 +42,13 @@ class MCP::Client {
             :$method,
             :%params,
         ;
-        note "MCPRequest::msg:\n", to-json(%msg, :pretty) if $!echo;
+        note "MCP::request::msg:\n", to-json(%msg, :pretty) if $!echo;
         $!output = '';
         await $!process.say(self.to-mcp-json(%msg));
         #$!process.close-stdin;
         sleep($!sleep);
         my $res = self.read();
-        note "MCPRequest::res: ", $res.raku if $!echo;
+        note "MCP::request::res: ", $res.raku if $!echo;
         $!next-id += 1;
         return $res;
     }
@@ -86,7 +86,7 @@ class MCP::Client {
         return $res<result><tools>;
     }
 
-    method call-tool(%client, Str:D $name, Mu $arguments = {}, ) {
+    method call-tool(Str:D $name, Mu $arguments = {}, ) {
         my $res = self.request("tools/call", {
             :$name,
             :$arguments,
@@ -97,16 +97,16 @@ class MCP::Client {
     method param-cpec($schema) returns Map:D {
         my %props = $schema<properties> // %();
         my @required = $schema<required> // [];
-        return %props.map( -> $name, $spec {
+        return %props.kv.map( -> $name, $spec {
             $name => {
                 type => "string",
                 description => $spec<description> // "",
                 :named
             }
-        })
+        }).Hash
     }
 
-    method to-llm-tool(%tool, ) returns LLM::Tool {
+    method to-llm-tool(%tool) returns LLM::Tool {
         my $name = %tool<name>;
         my $description = %tool<description> // "";
         my %parameters = self.param-cpec(%tool<inputSchema>);
