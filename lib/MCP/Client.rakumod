@@ -17,7 +17,7 @@ class MCP::Client {
         # Tap into stdout asynchronously
         $!output = '';
         $!process.stdout.tap( -> $chunk {
-            note (:$chunk) if $!echo;
+            note "MCP::Client.process.tap (chunk) : {$chunk}" if $!echo;
             $!output ~= $chunk
         });
         # Start process
@@ -42,13 +42,13 @@ class MCP::Client {
             :$method,
             :%params,
         ;
-        note "MCP::request::msg:\n", to-json(%msg, :pretty) if $!echo;
+        note "MCP::Client.request (msg):\n", to-json(%msg, :pretty) if $!echo;
         $!output = '';
         await $!process.say(self.to-mcp-json(%msg));
         #$!process.close-stdin;
         sleep($!sleep);
         my $res = self.read();
-        note "MCP::request::res: ", $res.raku if $!echo;
+        note "MCP::Client.request (res): ", $res.raku if $!echo;
         $!next-id += 1;
         return $res;
     }
