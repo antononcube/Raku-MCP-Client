@@ -1,7 +1,11 @@
 #!/usr/bin/env raku
 use v6.d;
 
-use lib <. lib>;
+#use lib <. lib>;
+use LLM::Functions;
+use LLM::Prompts;
+use Text::SubParsers;
+
 use MCP::Client;
 
 my $python = $*HOME ~ '/miniforge3/envs/ADK13/bin/python';
@@ -21,6 +25,41 @@ say $client.start([$python, '-i', $mcp-server-file]);
 
 $client.initialize();
 
-.say for |$client.list-tools();
+say '=' x 100;
+say 'MCP tools';
+say '-' x 100;
 
+my @mcp-tools = |$client.list-tools();
+
+.say for |@mcp-tools;
+
+my @tools = @mcp-tools.map({ $client.to-llm-tool($_) });
+
+say '=' x 100;
+say 'LLM::Tool objects';
+say '-' x 100;
+
+.say for |@tools;
+
+say '=' x 100;
+say 'LLM synthesis';
+say '-' x 100;
+
+my $conf = llm-configuration('ChatGPT', model => 'gpt-4.1-mini', :@tools);
+
+say llm-synthesize('Generate a list of 12 random common words.', e => $conf);
+
+say '-' x 100;
+
+my @res = |llm-synthesize([
+    'Generate a list of 6 random bulshit jobs.',
+    llm-prompt('NothingElse')('JSON')
+    ],
+    e => $conf,
+    form => sub-parser('JSON'):drop
+);
+
+.say for |@res;
+
+## Kill MCP sever process
 $client.kill;
