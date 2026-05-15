@@ -1,6 +1,6 @@
 # MCP::Client
 
-This Raku package, "MCP::Client" implements a _thin_ [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) client.
+This Raku package, "MCP::Client", implements a _thin_ [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) client.
 
 "MCP::Client" provides the class `MCP::Client` which creates from MCP server's methods `LLM::Tool` objects 
 that can be used with Raku's Large Language Model (LLM) framework implemented with 
