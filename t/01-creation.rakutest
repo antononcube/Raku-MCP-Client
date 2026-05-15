@@ -1,0 +1,9 @@
+use v6.d;
+use MCP::Client;
+use Test;
+
+plan *;
+
+ok MCP::Client.new(:echo, :2sleep);
+
+done-testing;
