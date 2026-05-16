@@ -7,6 +7,8 @@ class MCP::Client {
     has Str:D $.output = '';
     has Int:D $.next-id = 0;
     has Bool:D $.initialized = False;
+    has %.env = %();
+    has $.cwd = Whatever;
     has Numeric:D $.sleep = 1;
     has Bool:D $.echo = False;
     has $.process;
@@ -21,7 +23,7 @@ class MCP::Client {
             $!output ~= $chunk
         });
         # Start process
-        $!promise = $!process.start;
+        $!promise = $!process.start(ENV => %!env, cwd => $!cwd.defined ?? $!cwd !! $*CWD);
         $!next-id = 0;
         return %(:$!process, :$!promise, :$!next-id);
     }
@@ -44,8 +46,7 @@ class MCP::Client {
         ;
         note "MCP::Client.request (msg):\n", to-json(%msg, :pretty) if $!echo;
         $!output = '';
-        await $!process.say(self.to-mcp-json(%msg));
-        #$!process.close-stdin;
+        await $!process.print(self.to-mcp-json(%msg).trim ~ "\n");
         sleep($!sleep);
         my $res = self.read();
         note "MCP::Client.request (res): ", $res.raku if $!echo;
