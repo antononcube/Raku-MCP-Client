@@ -95,7 +95,7 @@ class MCP::Client {
         return $res<result>;
     }
 
-    method param-cpec($schema) returns Map:D {
+    method param-spec($schema) returns Map:D {
         my %props = $schema<properties> // %();
         my @required = $schema<required> // [];
         return %props.kv.map( -> $name, $spec {
@@ -110,17 +110,30 @@ class MCP::Client {
     method to-llm-tool(%tool) returns LLM::Tool {
         my $name = %tool<name>;
         my $description = %tool<description> // "";
-        my %parameters = self.param-cpec(%tool<inputSchema>);
-        my @required = %tool<inputSchema><requried> // [];
+        my %parameters = self.param-spec(%tool<inputSchema>);
+        my $required = %tool<inputSchema><required> // [];
+
+        # If inputSchema.properties is empty using OpenAI API this kind of message is given
+        #  'additionalProperties' is required to be supplied and to be false.
+        # Hence the workaround here.
+        unless %tool<inputSchema><properties> {
+            %parameters<additionalProperties> = %parameters<additionalProperties> // False
+        }
+
+        # Tool info
         my %info =
                 :$name,
                 :$description,
                 :%parameters,
-                :@required;
+                :$required;
+
+        # Function
         my &func =  -> *@args, *%args {
             note "LLM::Tool::arguments: ", (:@args, :%args) if $!echo;
             to-json(self.call-tool(%info<name>, %args))
         };
+
+        # Object
         return LLM::Tool.new(%info, &func)
     }
 
