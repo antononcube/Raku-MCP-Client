@@ -17,8 +17,8 @@ die "Cannot find MCP server file ⎡$mcp-server-file⎦." unless $mcp-server-fil
 note "Using the Python executable ⎡$python⎦.";
 note "Using the MCP server file ⎡$mcp-server-file⎦.";
 
-my Bool:D $echo = True;
-my Numeric:D $sleep = 0.7;
+my Bool:D $echo = False;
+my Numeric:D $sleep = 1;
 my $client = MCP::Client.new(:$echo, :$sleep);
 
 say $client.start([$python, '-i', $mcp-server-file]);
@@ -47,7 +47,9 @@ say '-' x 100;
 
 my $conf = llm-configuration('ChatGPT', model => 'gpt-4.1-mini', :@tools);
 
-say llm-synthesize('Generate a list of 12 random common words.', e => $conf);
+#say llm-synthesize('Generate a list of 12 random common words.', e => $conf);
+say llm-synthesize('What is the current datetime?.', e => $conf);
+
 
 say '-' x 100;
 
