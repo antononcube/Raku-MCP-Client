@@ -1,0 +1,9 @@
+Revision history for "MCP::Client"
+
+0.0.2 2026-05-17
+    - Using OS env variables and current directory arguments for MCP client creation.
+    - Refactor: More robust tool schema processing.
+        - Especially, "corner case MCP tools" that take not arguments.
+
+0.0.1 2026-05-15
+    - First version.
