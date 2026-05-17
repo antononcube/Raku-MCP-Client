@@ -1,7 +1,16 @@
 from mcp.server.fastmcp import FastMCP
 from RandomDataGenerators import *
+from datetime import datetime
 
 mcp = FastMCP("demo")
+
+@mcp.tool()
+def get_datetime() -> str:
+    """
+    Current date-time.
+    Args: None
+    """
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
